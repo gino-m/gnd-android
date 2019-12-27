@@ -21,7 +21,7 @@ import com.google.auto.value.AutoValue;
 
 /** An area is a contiguous set of tiles that form a geodesic rectangle. */
 @AutoValue
-public abstract class OfflineArea {
+public abstract classx OfflineArea {
 
   public abstract String getId();
 
