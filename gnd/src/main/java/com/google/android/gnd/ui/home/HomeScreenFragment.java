@@ -52,13 +52,13 @@ import com.google.android.gnd.rx.Schedulers;
 import com.google.android.gnd.system.AuthenticationManager;
 import com.google.android.gnd.ui.common.AbstractFragment;
 import com.google.android.gnd.ui.common.BackPressListener;
-import com.google.android.gnd.ui.common.BottomSheetBehavior;
 import com.google.android.gnd.ui.common.EphemeralPopups;
 import com.google.android.gnd.ui.common.ProgressDialogs;
 import com.google.android.gnd.ui.common.TwoLineToolbar;
 import com.google.android.gnd.ui.home.mapcontainer.MapContainerFragment;
 import com.google.android.gnd.ui.projectselector.ProjectSelectorDialogFragment;
 import com.google.android.gnd.ui.projectselector.ProjectSelectorViewModel;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener;
 import io.reactivex.subjects.PublishSubject;
@@ -176,9 +176,7 @@ public class HomeScreenFragment extends AbstractFragment
     }
   }
 
-  /**
-   * Set the height of the bottom sheet so it completely fills the screen when expanded.
-   */
+  /** Set the height of the bottom sheet so it completely fills the screen when expanded. */
   private void setBottomSheetHeight() {
     CoordinatorLayout.LayoutParams params =
         (CoordinatorLayout.LayoutParams) bottomSheetScrollView.getLayoutParams();
@@ -245,8 +243,8 @@ public class HomeScreenFragment extends AbstractFragment
 
     // When the bottom sheet is expanded, the bottom edge of the header needs to be aligned with
     // the bottom edge of the toolbar (the header slides up under it).
-    bottomSheetBehavior.setExpandedOffset(
-        toolbarWrapper.getHeight() - bottomSheetHeader.getHeight());
+//    bottomSheetBehavior.setExpandedOffset(
+//        toolbarWrapper.getHeight() - bottomSheetHeader.getHeight());
 
     setBottomSheetHeight();
     getView().getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -256,7 +254,7 @@ public class HomeScreenFragment extends AbstractFragment
     bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetScrollView);
     bottomSheetBehavior.setHideable(true);
     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-    bottomSheetBehavior.setBottomSheetCallback(new BottomSheetCallback());
+    bottomSheetBehavior.addBottomSheetCallback(new BottomSheetCallback());
   }
 
   @Override

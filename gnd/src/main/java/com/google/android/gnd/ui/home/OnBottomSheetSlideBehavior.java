@@ -23,7 +23,7 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import com.google.android.gnd.R;
-import com.google.android.gnd.ui.common.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 public abstract class OnBottomSheetSlideBehavior<V extends View>
     extends CoordinatorLayout.Behavior<V> {
