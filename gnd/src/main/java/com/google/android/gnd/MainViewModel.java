@@ -23,7 +23,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.google.android.gnd.model.Project;
 import com.google.android.gnd.model.TermsOfService;
-import com.google.android.gnd.persistence.local.LocalValueStore;
 import com.google.android.gnd.repository.FeatureRepository;
 import com.google.android.gnd.repository.ProjectRepository;
 import com.google.android.gnd.repository.TermsOfServiceRepository;
@@ -63,9 +62,9 @@ public class MainViewModel extends AbstractViewModel {
 
   private final ProjectRepository projectRepository;
   private final FeatureRepository featureRepository;
+  private final TermsOfServiceRepository termsOfServiceRepository;
   private final Navigator navigator;
   private final EphemeralPopups popups;
-  private final LocalValueStore localValueStore;
   private final AuthenticationManager authenticationManager;
 
   @Inject
@@ -77,13 +76,12 @@ public class MainViewModel extends AbstractViewModel {
       Navigator navigator,
       AuthenticationManager authenticationManager,
       EphemeralPopups popups,
-      Schedulers schedulers,
-      LocalValueStore localValueStore) {
+      Schedulers schedulers) {
     this.projectRepository = projectRepository;
     this.featureRepository = featureRepository;
+    this.termsOfServiceRepository = termsOfServiceRepository;
     this.navigator = navigator;
     this.popups = popups;
-    this.localValueStore = localValueStore;
     this.authenticationManager = authenticationManager;
 
     // TODO: Move to background service.
@@ -176,7 +174,7 @@ public class MainViewModel extends AbstractViewModel {
   private void onSignedIn() {
     hideProgressDialog();
     if (termsState.getValue() == LoadState.NOT_FOUND) {
-      localValueStore.setTermsAccepted(true);
+      termsOfServiceRepository.setTermsOfServiceAccepted(true);
       navigator.navigate(HomeScreenFragmentDirections.showHomeScreen());
     } else {
       if (signInProgressDialogVisibility.getValue() == null) {
