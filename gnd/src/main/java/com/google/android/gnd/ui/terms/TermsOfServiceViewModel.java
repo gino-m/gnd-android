@@ -16,9 +16,51 @@
 
 package com.google.android.gnd.ui.terms;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.LiveDataReactiveStreams;
+import androidx.lifecycle.MutableLiveData;
+import com.google.android.gnd.model.TermsOfService;
+import com.google.android.gnd.persistence.local.LocalValueStore;
+import com.google.android.gnd.repository.TermsRepository;
+import com.google.android.gnd.rx.Loadable;
+import com.google.android.gnd.rx.annotations.Hot;
 import com.google.android.gnd.ui.common.AbstractViewModel;
+import com.google.android.gnd.ui.common.Navigator;
+import javax.inject.Inject;
 
-// TODO: Needs to handle view state and behaviors of the Terms Fragment
 public class TermsOfServiceViewModel extends AbstractViewModel {
+
+  private final Navigator navigator;
+
+  @Hot(replays = true)
+  public final MutableLiveData<String> termsText = new MutableLiveData<>();
+
+  @Hot(replays = true)
+  public final MutableLiveData<Boolean> termsCheckBox = new MutableLiveData<>();
+  private final LocalValueStore localValueStore;
+
+  private final LiveData<Loadable<TermsOfService>> projectTerms;
+
+  @Inject
+  public TermsOfServiceViewModel(Navigator navigator,
+      LocalValueStore localValueStore, TermsRepository termsRepository) {
+    this.navigator = navigator;
+    this.localValueStore = localValueStore;
+    this.projectTerms = LiveDataReactiveStreams.fromPublisher(
+        termsRepository.getProjectTerms());
+  }
+
+  public void onButtonClicked() {
+    localValueStore.setTermsAccepted(true);
+    navigator.navigate(TermsOfServiceFragmentDirections.proceedDirectlyToHomeScreen());
+  }
+
+  public LiveData<Loadable<TermsOfService>> getTerms() {
+    return projectTerms;
+  }
+
+  public void setTermsTextView(String terms) {
+    termsText.setValue(terms);
+  }
 
 }

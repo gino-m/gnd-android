@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package com.google.android.gnd.system.auth;
+package com.google.android.gnd.persistence.remote.firestore.schema;
 
-import com.google.android.gnd.model.User;
-import io.reactivex.Observable;
+import com.google.android.gnd.persistence.remote.firestore.base.FluentCollectionReference;
+import com.google.firebase.firestore.CollectionReference;
 
-/**
- * Handles details of sign in / authentication, and sign out.
- */
-public interface AuthenticationManager {
-  Observable<SignInState> getSignInState();
+public class TermsCollectionReference extends FluentCollectionReference {
+  private static final String TOS = "tos";
 
-  void signOut();
+  TermsCollectionReference(CollectionReference ref) {
+    super(ref);
+  }
 
-  User getCurrentUser();
+  public TermsDocumentReference getTerm() {
+    return new TermsDocumentReference(reference().document(TOS));
+  }
 
-  void signIn();
-
-  void init();
 }
