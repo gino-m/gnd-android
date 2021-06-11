@@ -102,10 +102,10 @@ public class AddFeatureTest {
 
     dataBindingIdlingResource.monitorActivity(scenarioRule.getScenario());
 
-    // Tap on the checkbox
+    // Tap "Agree" checkbox.
     onView(withId(R.id.agreeCheckBox)).perform(click());
 
-    // Tap on Submit on Terms Fragment
+    // Tap "Submit" on Terms Fragment
     onView(withId(R.id.agreeButton)).perform(click());
 
     // Tap on the crosshair at the centre of the map.
