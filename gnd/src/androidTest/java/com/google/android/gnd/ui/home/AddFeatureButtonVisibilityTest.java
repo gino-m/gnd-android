@@ -47,10 +47,10 @@ import org.junit.Rule;
 import org.junit.Test;
 
 @UninstallModules({
-    AuthenticationModule.class,
-    RemoteStorageModule.class,
-    LocalDatabaseModule.class,
-    SchedulersModule.class
+  AuthenticationModule.class,
+  RemoteStorageModule.class,
+  LocalDatabaseModule.class,
+  SchedulersModule.class
 })
 @HiltAndroidTest
 public class AddFeatureButtonVisibilityTest {
@@ -106,10 +106,10 @@ public class AddFeatureButtonVisibilityTest {
 
       dataBindingIdlingResource.monitorActivity(scenario);
 
-      // Tap on the checkbox
+      // Tap "Agree" checkbox.
       onView(withId(R.id.agreeCheckBox)).perform(click());
 
-      // Tap on Submit on Terms Fragment
+      // Tap "Submit" on Terms fragment.
       onView(withId(R.id.agreeButton)).perform(click());
 
       onView(withId(R.id.add_feature_btn)).check(isVisible());
@@ -125,10 +125,10 @@ public class AddFeatureButtonVisibilityTest {
 
       dataBindingIdlingResource.monitorActivity(scenario);
 
-      // Tap on the checkbox
+      // Tap "Agree" checkbox
       onView(withId(R.id.agreeCheckBox)).perform(click());
 
-      // Tap on Submit on Terms Fragment
+      // Tap "Submit" on Terms fragment.
       onView(withId(R.id.agreeButton)).perform(click());
 
       onView(withId(R.id.add_feature_btn)).check(isGone());
