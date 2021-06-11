@@ -14,22 +14,25 @@
  * limitations under the License.
  */
 
-package com.google.android.gnd.system.auth;
+package com.google.android.gnd.persistence.remote.firestore.schema;
 
-import com.google.android.gnd.model.User;
-import io.reactivex.Observable;
+import com.google.firebase.firestore.IgnoreExtraProperties;
 
-/**
- * Handles details of sign in / authentication, and sign out.
- */
-public interface AuthenticationManager {
-  Observable<SignInState> getSignInState();
+/** Terms entity stored in Firestore. */
+@IgnoreExtraProperties
+class TermsDocument {
+  private String terms;
 
-  void signOut();
+  @SuppressWarnings("unused")
+  public TermsDocument() {}
 
-  User getCurrentUser();
+  @SuppressWarnings("unused")
+  TermsDocument(String terms) {
+    this.terms = terms;
+  }
 
-  void signIn();
+  public String getTerms() {
+    return terms;
+  }
 
-  void init();
 }
