@@ -27,8 +27,6 @@ import com.google.android.gnd.repository.FeatureRepository;
 import com.google.android.gnd.repository.ProjectRepository;
 import com.google.android.gnd.repository.TermsOfServiceRepository;
 import com.google.android.gnd.repository.UserRepository;
-import com.google.android.gnd.rx.Loadable;
-import com.google.android.gnd.rx.Loadable.LoadState;
 import com.google.android.gnd.rx.Schedulers;
 import com.google.android.gnd.rx.annotations.Cold;
 import com.google.android.gnd.rx.annotations.Hot;
@@ -57,15 +55,13 @@ public class MainViewModel extends AbstractViewModel {
   @Hot(replays = true)
   private final MutableLiveData<Boolean> signInProgressDialogVisibility = new MutableLiveData<>();
 
-  @Hot(replays = true)
-  public final MutableLiveData<LoadState> termsState = new MutableLiveData<>();
-
   private final ProjectRepository projectRepository;
   private final FeatureRepository featureRepository;
   private final TermsOfServiceRepository termsOfServiceRepository;
   private final Navigator navigator;
   private final EphemeralPopups popups;
   private final AuthenticationManager authenticationManager;
+  private Optional<TermsOfService> termsOfService;
 
   @Inject
   public MainViewModel(
@@ -95,17 +91,29 @@ public class MainViewModel extends AbstractViewModel {
     disposeOnClear(
         authenticationManager
             .getSignInState()
-            .compose(switchMapIfPresent(SignInState::getUser, userRepository::saveUser))
+            // Save user and load terms of service before handling sign in events. Relies on side
+            // effects to simplify downstream observer.
+            .compose(
+                switchMapIfPresent(
+                    SignInState::getUser,
+                    user -> loadTermsOfService().andThen(userRepository.saveUser(user))))
             .observeOn(schedulers.ui())
             .subscribe(this::onSignInStateChange));
-
-    disposeOnClear(
-        termsOfServiceRepository
-            .getTermsOfService()
-            .observeOn(schedulers.ui())
-            .subscribe(this::getTermsOfService));
   }
 
+  /** Load terms of service on subscribe, setting in MainViewModel state. */
+  private Completable loadTermsOfService() {
+    return termsOfServiceRepository
+        .getTermsOfService()
+        // Log errors.
+        // TODO: Force quit on error.
+        .doOnNext(state -> state.error().ifPresent(Timber::e))
+        // Only complete on either loaded or not found states.
+        .filter(state -> state.isLoaded() || state.isNotFound())
+        .doOnNext(tos -> this.termsOfService = tos.value())
+        .firstElement()
+        .ignoreElement();
+  }
   /**
    * Keeps local features in sync with remote when a project is active, does nothing when no project
    * is active. The stream never completes; syncing stops when subscriptions are disposed of.
@@ -147,10 +155,6 @@ public class MainViewModel extends AbstractViewModel {
     }
   }
 
-  private void getTermsOfService(Loadable<TermsOfService> termsOfService) {
-    termsState.setValue(termsOfService.getState());
-  }
-
   private void showProgressDialog() {
     signInProgressDialogVisibility.postValue(true);
   }
@@ -173,15 +177,16 @@ public class MainViewModel extends AbstractViewModel {
 
   private void onSignedIn() {
     hideProgressDialog();
-    if (termsState.getValue() == LoadState.NOT_FOUND) {
-      termsOfServiceRepository.setTermsOfServiceAccepted(true);
-      navigator.navigate(HomeScreenFragmentDirections.showHomeScreen());
-    } else {
+
+    if (termsOfService.isPresent()) {
+      // TODO: Why is this necessary?
       if (signInProgressDialogVisibility.getValue() == null) {
         authenticationManager.signOut();
-      } else {
-        navigator.navigate(SignInFragmentDirections.proceedToTermsScreen());
       }
+      navigator.navigate(SignInFragmentDirections.proceedToTermsScreen());
+    } else {
+      termsOfServiceRepository.setTermsOfServiceAccepted(true);
+      navigator.navigate(HomeScreenFragmentDirections.showHomeScreen());
     }
   }
 
