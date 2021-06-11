@@ -34,6 +34,7 @@ import timber.log.Timber;
 public class TermsOfServiceFragment extends AbstractFragment implements BackPressListener {
 
   private TermsOfServiceViewModel viewModel;
+
   @SuppressWarnings("NullAway")
   private FragmentTermsServiceBinding binding;
 
@@ -43,26 +44,25 @@ public class TermsOfServiceFragment extends AbstractFragment implements BackPres
     this.viewModel = getViewModel(TermsOfServiceViewModel.class);
   }
 
-
   @Override
   public View onCreateView(
       LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     binding = FragmentTermsServiceBinding.inflate(inflater, container, false);
     binding.setViewModel(viewModel);
     binding.setLifecycleOwner(this);
-    viewModel.getTerms().observe(getViewLifecycleOwner(), this::getProjectTerms);
+    viewModel.getTerms().observe(getViewLifecycleOwner(), this::getTermsOfService);
     return binding.getRoot();
   }
 
-  private void getProjectTerms(Loadable<TermsOfService> projectTerms) {
-    switch (projectTerms.getState()) {
+  private void getTermsOfService(Loadable<TermsOfService> termsOfService) {
+    switch (termsOfService.getState()) {
       case LOADING:
         Timber.i("Loading terms");
         break;
       case LOADED:
         binding.termsLoadingProgressBar.setVisibility(View.GONE);
         binding.termsText.setVisibility(View.VISIBLE);
-        viewModel.setTermsTextView(projectTerms.value().get().getTerms());
+        viewModel.setTermsTextView(termsOfService.value().get().getTerms());
         break;
       case NOT_FOUND:
       case ERROR:
@@ -71,11 +71,10 @@ public class TermsOfServiceFragment extends AbstractFragment implements BackPres
         viewModel.setTermsTextView(getString(R.string.terms_load_error));
         break;
       default:
-        Timber.e("Unhandled state: %s",  projectTerms.getState());
+        Timber.e("Unhandled state: %s", termsOfService.getState());
         break;
     }
   }
-
 
   @Override
   public boolean onBack() {

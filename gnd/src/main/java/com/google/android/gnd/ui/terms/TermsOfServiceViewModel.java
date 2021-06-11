@@ -37,17 +37,18 @@ public class TermsOfServiceViewModel extends AbstractViewModel {
 
   @Hot(replays = true)
   public final MutableLiveData<Boolean> termsCheckBox = new MutableLiveData<>();
+
   private final LocalValueStore localValueStore;
 
-  private final LiveData<Loadable<TermsOfService>> projectTerms;
+  private final LiveData<Loadable<TermsOfService>> termsOfService;
 
   @Inject
-  public TermsOfServiceViewModel(Navigator navigator,
-      LocalValueStore localValueStore, TermsRepository termsRepository) {
+  public TermsOfServiceViewModel(
+      Navigator navigator, LocalValueStore localValueStore, TermsRepository termsRepository) {
     this.navigator = navigator;
     this.localValueStore = localValueStore;
-    this.projectTerms = LiveDataReactiveStreams.fromPublisher(
-        termsRepository.getProjectTerms());
+    this.termsOfService =
+        LiveDataReactiveStreams.fromPublisher(termsRepository.getTermsOfService());
   }
 
   public void onButtonClicked() {
@@ -56,11 +57,10 @@ public class TermsOfServiceViewModel extends AbstractViewModel {
   }
 
   public LiveData<Loadable<TermsOfService>> getTerms() {
-    return projectTerms;
+    return termsOfService;
   }
 
   public void setTermsTextView(String terms) {
     termsText.setValue(terms);
   }
-
 }

@@ -28,8 +28,8 @@ import javax.inject.Singleton;
 import timber.log.Timber;
 
 /**
- * Coordinates persistence and retrieval of {@link TermsOfService} instances from remote, local, and in
- * memory data stores. For more details on this pattern and overall architecture, see
+ * Coordinates persistence and retrieval of {@link TermsOfService} instances from remote, local, and
+ * in memory data stores. For more details on this pattern and overall architecture, see
  * https://developer.android.com/jetpack/docs/guide.
  */
 @Singleton
@@ -40,17 +40,15 @@ public class TermsRepository {
   private final RemoteDataStore remoteDataStore;
 
   @Inject
-  public TermsRepository(
-      RemoteDataStore remoteDataStore) {
+  public TermsRepository(RemoteDataStore remoteDataStore) {
     this.remoteDataStore = remoteDataStore;
-
   }
 
   @Cold
-  public Flowable<Loadable<TermsOfService>> getProjectTerms() {
+  public Flowable<Loadable<TermsOfService>> getTermsOfService() {
     return loadTermsFromRemote()
         .doOnSubscribe(__ -> Timber.d("Loading terms from remote"))
-        .doOnError(err -> Timber.d( "Failed to load terms from remote"))
+        .doOnError(err -> Timber.d("Failed to load terms from remote"))
         .toFlowable()
         .compose(Loadable::loadingOnceAndWrap);
   }
