@@ -68,7 +68,6 @@ public class MainViewModel extends AbstractViewModel {
   private final LocalValueStore localValueStore;
   private final AuthenticationManager authenticationManager;
 
-
   @Inject
   public MainViewModel(
       ProjectRepository projectRepository,
@@ -102,8 +101,11 @@ public class MainViewModel extends AbstractViewModel {
             .observeOn(schedulers.ui())
             .subscribe(this::onSignInStateChange));
 
-    disposeOnClear(termsRepository.getProjectTerms()
-        .observeOn(schedulers.ui()).subscribe(this::getProjectTerms));
+    disposeOnClear(
+        termsRepository
+            .getTermsOfService()
+            .observeOn(schedulers.ui())
+            .subscribe(this::getTermsOfService));
   }
 
   /**
@@ -147,8 +149,8 @@ public class MainViewModel extends AbstractViewModel {
     }
   }
 
-  private void getProjectTerms(Loadable<TermsOfService> projectTerms) {
-    termsState.setValue(projectTerms.getState());
+  private void getTermsOfService(Loadable<TermsOfService> termsOfService) {
+    termsState.setValue(termsOfService.getState());
   }
 
   private void showProgressDialog() {
