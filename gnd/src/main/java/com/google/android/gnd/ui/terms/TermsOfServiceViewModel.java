@@ -21,7 +21,7 @@ import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.MutableLiveData;
 import com.google.android.gnd.model.TermsOfService;
 import com.google.android.gnd.persistence.local.LocalValueStore;
-import com.google.android.gnd.repository.TermsRepository;
+import com.google.android.gnd.repository.TermsOfServiceRepository;
 import com.google.android.gnd.rx.Loadable;
 import com.google.android.gnd.rx.annotations.Hot;
 import com.google.android.gnd.ui.common.AbstractViewModel;
@@ -44,11 +44,13 @@ public class TermsOfServiceViewModel extends AbstractViewModel {
 
   @Inject
   public TermsOfServiceViewModel(
-      Navigator navigator, LocalValueStore localValueStore, TermsRepository termsRepository) {
+      Navigator navigator,
+      LocalValueStore localValueStore,
+      TermsOfServiceRepository termsOfServiceRepository) {
     this.navigator = navigator;
     this.localValueStore = localValueStore;
     this.termsOfService =
-        LiveDataReactiveStreams.fromPublisher(termsRepository.getTermsOfService());
+        LiveDataReactiveStreams.fromPublisher(termsOfServiceRepository.getTermsOfService());
   }
 
   public void onButtonClicked() {
