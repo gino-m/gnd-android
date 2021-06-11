@@ -33,14 +33,14 @@ import timber.log.Timber;
  * https://developer.android.com/jetpack/docs/guide.
  */
 @Singleton
-public class TermsRepository {
+public class TermsOfServiceRepository {
 
   private static final long LOAD_REMOTE_PROJECT_SUMMARIES_TIMEOUT_SECS = 30;
 
   private final RemoteDataStore remoteDataStore;
 
   @Inject
-  public TermsRepository(RemoteDataStore remoteDataStore) {
+  public TermsOfServiceRepository(RemoteDataStore remoteDataStore) {
     this.remoteDataStore = remoteDataStore;
   }
 

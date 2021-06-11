@@ -26,7 +26,7 @@ import com.google.android.gnd.model.TermsOfService;
 import com.google.android.gnd.persistence.local.LocalValueStore;
 import com.google.android.gnd.repository.FeatureRepository;
 import com.google.android.gnd.repository.ProjectRepository;
-import com.google.android.gnd.repository.TermsRepository;
+import com.google.android.gnd.repository.TermsOfServiceRepository;
 import com.google.android.gnd.repository.UserRepository;
 import com.google.android.gnd.rx.Loadable;
 import com.google.android.gnd.rx.Loadable.LoadState;
@@ -72,7 +72,7 @@ public class MainViewModel extends AbstractViewModel {
   public MainViewModel(
       ProjectRepository projectRepository,
       FeatureRepository featureRepository,
-      TermsRepository termsRepository,
+      TermsOfServiceRepository termsOfServiceRepository,
       UserRepository userRepository,
       Navigator navigator,
       AuthenticationManager authenticationManager,
@@ -102,7 +102,7 @@ public class MainViewModel extends AbstractViewModel {
             .subscribe(this::onSignInStateChange));
 
     disposeOnClear(
-        termsRepository
+        termsOfServiceRepository
             .getTermsOfService()
             .observeOn(schedulers.ui())
             .subscribe(this::getTermsOfService));
